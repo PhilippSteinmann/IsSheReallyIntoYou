@@ -8,7 +8,8 @@ document.getElementById("login").onclick = function() {
 
 // These are global variables, we're cheating a little here
 friendName = "";
-inbox = [];
+// Of type Thread, defined by FB https://developers.facebook.com/docs/graph-api/reference/v2.2/thread
+var thread;
 
 function getInbox(response) {
     // Get all messages in inbox
@@ -21,35 +22,28 @@ function inboxCallBack(response) {
         return;
     }
 
-    inbox = response.data;
+    var inbox = response.data;
     var message, participants;
 
-    // Loop through messages in inbox to find correct ID
+    // Loop through messages in inbox to find thread
     for (var i = 0; i < inbox.length; i++) {
-        message = inbox[i];
-        participants = message.to.data;
+        currentTrhead = inbox[i];
+        participants = currentThread.to.data;
 
         // For everybody who participated in this chat...
         for (var x = 0; x < participants.length; x++) {
             // If it's the right person...
             if (participants[x].name == friendName) {
-                var messageID = message.id;
-                getMessageContent(messageID);
+                thread = currentThread;
             }
         }
     }
+    analyzeThread();
 }
 
-function getMessageContent(messageID) {
-    FB.api("/" + messageID, messageCallBack);
-}
-
-function messageCallBack(response) {
-    if (response.error) {
-        handleError(response.error);
-        return;
-    }
-    alert("GOT RESPONSE: " + response);
+function analyzeThread() {
+    // First 25 messages, not sure how to get more
+    var messages = thread.comments.data;
 }
 
 function handleError(error) {
