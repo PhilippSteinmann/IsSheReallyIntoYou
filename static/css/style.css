@@ -1,0 +1,45 @@
+body {
+    padding: 0;
+}
+
+*:active {
+    outline: none;
+}
+
+/* Color Combo:
+ * http://www.colorcombos.com/color-schemes/22/ColorCombo22.html
+ */
+.title-large {
+    text-decoration: none;
+    font-size: 54px;
+    font-family: "Montserrat", "Helvetica", sans-serif;
+    text-transform: uppercase;
+    display: block;
+    text-align: center;
+    color: rgb(193, 49, 0);
+    margin-bottom: 54px;
+}
+
+.content {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-top: 2%;
+}
+
+#login {
+    background: none;
+    border: none;
+    margin: 0 auto;
+    display: block;
+    font: 36px "Montserrat", "Helvetica", sans-serif;
+    text-transform: uppercase;
+    background-color: #FF9900;
+    padding: 8px 12px;
+    cursor: pointer;
+    outline: none;
+}
+
+#login:hover {
+    background-color: #CC6600;
+    outline: none;
+}
