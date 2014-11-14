@@ -105,6 +105,7 @@ function listenForClicks() {
         elem.onclick = function() {
             var name = this.getAttribute("data-name");
             var thread_index = this.getAttribute("data-thread-index");
+            thread = all_threads[thread_index];
             showLoadingScreen();
             analyzeContent();
         }
@@ -124,7 +125,7 @@ function showLoadingScreen() {
     </div>\
 </div>";
     document.getElementById("loading-screen").innerHTML = loadingScreenHTML;
-    loading_messages_timer = setInterval(changeLoadingMessage, 1400);
+    loading_messages_timer = setInterval(changeLoadingMessage, 1800);
 }
 
 function changeLoadingMessage() {
