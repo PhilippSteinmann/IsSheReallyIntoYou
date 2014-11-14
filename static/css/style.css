@@ -1,5 +1,6 @@
 body {
     padding: 0;
+    font-family: "Montserrat", "Helvetica", sans-serif;
 }
 
 *:active {
@@ -42,4 +43,19 @@ body {
 #login:hover {
     background-color: #CC6600;
     outline: none;
+}
+
+#friendList p {
+    font-weight: bold;
+    color: #CC6600;
+    font-size: 36px;
+    text-align: center;
+}
+
+#friendList li {
+    list-style-type: none;
+}
+
+#friendList a {
+    text-decoration: none;
 }
