@@ -7,6 +7,12 @@ body {
     outline: none;
 }
 
+*, *:after, *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 /* Color Combo:
  * http://www.colorcombos.com/color-schemes/22/ColorCombo22.html
  */
@@ -21,8 +27,7 @@ body {
     margin-bottom: 54px;
 }
 
-.content {
-    max-width: 1080px;
+.content { max-width: 1080px;
     margin: 0 auto;
     padding-top: 2%;
 }
@@ -45,7 +50,13 @@ body {
     outline: none;
 }
 
-#friendList p {
+#friendList:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#friendList .instructions {
     font-weight: bold;
     color: #CC6600;
     font-size: 36px;
@@ -54,8 +65,34 @@ body {
 
 #friendList li {
     list-style-type: none;
+    width: 33%;
+    float: left;
+    margin-bottom: 30px;
+    /* To vertically align text
+     * http://zerosixthree.se/vertical-align-anything-with-just-3-lines-of-css/
+     */
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
 }
 
 #friendList a {
     text-decoration: none;
+    color: #CC6600;
+    transition: 0.3s border;
+
+    /* Make it take up whole cell */
+    display: block;
+    width: 100%;
+}
+
+#friendList a:hover {
+    border-bottom: 1px solid rgb(193, 49, 0)
+}
+
+#friendList img {
+
+}
+
+#friendList .friendName {
 }
