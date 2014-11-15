@@ -27,12 +27,13 @@ body {
     margin-bottom: 54px;
 }
 
-.content { max-width: 1080px;
+#content { 
+    max-width: 1080px;
     margin: 0 auto;
     padding-top: 2%;
 }
 
-#login {
+#start-button {
     background: none;
     border: none;
     margin: 0 auto;
@@ -45,7 +46,7 @@ body {
     outline: none;
 }
 
-#login:hover {
+#start-button:hover {
     background-color: #CC6600;
     outline: none;
 }
@@ -152,4 +153,16 @@ body {
     transform: scaleY(1.0);
     -webkit-transform: scaleY(1.0);
   }
+}
+
+@media (max-width: 460px) {
+    #friendList li {
+        width: 100%;
+    }
+    #friendList a {
+        text-align: center;
+    }
+    #friendList img {
+        margin: 0 auto;
+    }
 }

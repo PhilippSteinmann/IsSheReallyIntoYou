@@ -1,16 +1,34 @@
-document.getElementById("login").onclick = function() {
-    // Make sure we have permission
+// When the user clicks on the "FIND OUT" button...
+document.getElementById("start-button").onclick = function() {
+    // Ask for permission to read the mailbox
     FB.login(getUserData, {scope: 'read_mailbox'});
 }
 
-// These are global variables, we're cheating a little here
-// Of type Thread, defined by FB https://developers.facebook.com/docs/graph-api/reference/v2.2/thread
-var thread;
-var user_data;
-var friend_name = "";
+// These are global variables.
+
+// Before the user chooses a friend, this contains 50 most recent threads
 var all_threads; 
+
+// Of type Thread, defined by FB at https://developers.facebook.com/docs/graph-api/reference/v2.2/thread
+var thread;
+
+// Basic data like name, gender, locale.
+// Called in getUserData() through "/me"
+var user_data;
+
+// Nice to have
+var friend_name = "";
+
+// Array of objects. Important properties: `created_time`, `from`, `message`
+var messages = [];
+
+// The messages used to entertain the user while we fetch messages & compute stuff.
+// We save the timer so that we can cancel it when the computation is finished.
 var loading_messages_timer;
-var loading_messages = ["Crunching Numbers...", "Contacting Friends...", "Reading Diaries..."];
+var loading_messages = ["Crunching Numbers...", "Contacting Friends...", "Reading Diaries...", "Analyzing Facial Expressions..."];
+
+var MAX_MESSAGES_TO_LOAD = 400;
+
 // Get the user's name, locale, etc.
 // This is the callback from the login button onclic
 function getUserData() {
@@ -26,11 +44,12 @@ function getInbox(response) {
     }
 
     user_data = response;
-    // Won't return more than 50, that's max
+
+    // Get 50 most recent threads. 50 is the max.
     FB.api("/me/inbox", {limit: 50 }, displayFriends);
 }
 
-// Let the user choose the friend he/she likes.
+// List friends, and let the user choose the friend he/she likes.
 // This is the callback from getInbox()
 function displayFriends(response) {
     if (response.error) {
@@ -38,36 +57,39 @@ function displayFriends(response) {
         return;
     }
 
-    // Tell the user to pick a person
-    displayInstructions();
+    // Hide start button, display instructions
+    prepareFriendList();
 
-    // all_threads = the 50 most recently updated chat threads
+    // all_threads = the 50 most recent chat threads
     all_threads = response.data;
     
     // for each, add to the friend list
     all_threads.forEach(function(thread, thread_index) {
-
         // only if it's a one-on-one conversation
         if (thread.to.data.length == 2)
             addToFriendsList(thread_index);
     } );
+
+    // Set click listeners on the list
     listenForClicks();
 }
 
-// Tell the user to choose "Who's the One"
-function displayInstructions() {
+// Hide start button, display instructions
+// Called by displayFriends()
+function prepareFriendList() {
     // Vanilla JS, sorry
-    document.getElementById("login").style.display = "none";
+    document.getElementById("start-button").style.display = "none";
     var all_friends_element = document.querySelector("#friendList ul");
     var instructions_element = document.createElement("p");
     instructions_element.className = "instructions";
-    var instructions_text_element = document.createTextNode("WHICH ONE?");
+    var instructions_text_element = document.createTextNode("WHO IS IT?");
 
     instructions_element.appendChild(instructions_text_element);
     all_friends_element.appendChild(instructions_element);
 }
 
 // Add the person's name from the given thread to the list
+// Called by displayFriends()
 function addToFriendsList(thread_index) {
     var thread = all_threads[thread_index];
     var participants = thread.to.data;
@@ -98,22 +120,31 @@ function addToFriendsList(thread_index) {
     all_friends_element.appendChild(friend_list_element);
 }
 
+// Set click listeners
+// Called by displayFriends()
 function listenForClicks() {
-    var all_links = document.querySelectorAll("#friendList a")
+    var all_links = document.querySelectorAll("#friendList li");
+
+    // For every list item, specify what happens when user clicks on it
     for (var i = 0; i < all_links.length; i++) {
         var elem = all_links[i];
         elem.onclick = function() {
-            var name = this.getAttribute("data-name");
+            friend_name = this.getAttribute("data-name");
             var thread_index = this.getAttribute("data-thread-index");
-            thread = all_threads[thread_index];
+            // "Crunching numbers", etc
             showLoadingScreen();
-            analyzeContent();
+
+            // We only get 25 messages per thread. We need to load more.
+            loadAllMessages(thread_index);
         }
     }
 }
 
 function showLoadingScreen() {
+    // Hide the friend list
     document.getElementById("friendList").style.display = "none";
+
+    // From http://tobiasahlin.com/spinkit/
     var loadingScreenHTML = "\
 <p id='loading' data-message-index='0'>Crunching Numbers...</p>\
 <div class='spinner'>\
@@ -125,9 +156,10 @@ function showLoadingScreen() {
     </div>\
 </div>";
     document.getElementById("loading-screen").innerHTML = loadingScreenHTML;
-    loading_messages_timer = setInterval(changeLoadingMessage, 1800);
+    loading_messages_timer = setInterval(changeLoadingMessage, 2200);
 }
 
+// Called at a regular interval
 function changeLoadingMessage() {
     var loading_message_element = document.getElementById("loading");
     var current_message_index = loading_message_element.getAttribute("data-message-index");
@@ -136,10 +168,55 @@ function changeLoadingMessage() {
     loading_message_element.innerText = loading_messages[new_message_index];
 }
 
-function analyzeContent() {
+function loadAllMessages(thread_index) {
+    thread = all_threads[thread_index];
+    messages = thread.comments.data;
+    loadPageOfMessages(thread.comments.paging.next);
+}
 
+// Messages are divided up into pages.
+// Each page contains a reference to the next (older) page
+function loadPageOfMessages(url) {
+    if (url== "")
+        return;
+
+    if (messages.length + 25 > MAX_MESSAGES_TO_LOAD)
+        return;
+
+    // Response is in JSON format
+    var response_object = JSON.parse(getURL(url));
+    var page_of_messages = response_object.data;
+    messages.push.apply(messages, page_of_messages);
+
+    if (messages.length + 25 <= MAX_MESSAGES_TO_LOAD)
+        loadPageOfMessages(response_object.paging.next);
+}
+
+
+// Not used, but useful for testing
+function displayLoadedMessages() {
+    var ul = document.createElement("ul");
+    var li, text;
+    messages.forEach(function(message) {
+        li = document.createElement("li");
+        text = document.createTextNode(message.from.name + ": " + message.message);
+        li.appendChild(text);
+        ul.appendChild(li);
+    } );
+    document.querySelector("#content").appendChild(ul);
 }
 
 function handleError(error) {
     alert("ERROR: " + error.message);
+}
+
+// http://stackoverflow.com/a/4033310/805556
+function getURL(url)
+{
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", url, false);
+    xmlHttp.send(null);
+    return xmlHttp.responseText;
 }
