@@ -156,16 +156,19 @@ function showLoadingScreen() {
     </div>\
 </div>";
     document.getElementById("loading-screen").innerHTML = loadingScreenHTML;
-    loading_messages_timer = setInterval(changeLoadingMessage, 2200);
+    loading_messages_timer = window.setInterval(changeLoadingMessage, 2400);
 }
 
 // Called at a regular interval
 function changeLoadingMessage() {
     var loading_message_element = document.getElementById("loading");
     var current_message_index = loading_message_element.getAttribute("data-message-index");
-    var new_message_index = (current_message_index + 1) % loading_messages.length;
+
+    // Without the parseInt() current_message_index is string.
+    // 30 minutes of terrible debugging
+    var new_message_index = (parseInt(current_message_index, 10) + 1) % loading_messages.length;
     loading_message_element.setAttribute("data-message-index", new_message_index);
-    loading_message_element.innerText = loading_messages[new_message_index];
+    loading_message_element.textContent = loading_messages[new_message_index];
 }
 
 function loadAllMessages(thread_index) {
@@ -188,7 +191,7 @@ function loadPageOfMessages(url) {
     var page_of_messages = response_object.data;
     messages.push.apply(messages, page_of_messages);
 
-    if (messages.length + 25 <= MAX_MESSAGES_TO_LOAD)
+    if (messages.length + 25 <= MAX_MESSAGES_TO_LOAD && response_object.paging)
         loadPageOfMessages(response_object.paging.next);
 }
 
