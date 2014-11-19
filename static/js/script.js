@@ -230,10 +230,10 @@ function splitOther(){
   //var n=0;
   messages.forEach(function(message){
     if (message.from.name==friend_name){
-      fromOther[fromOther.length]=message;
+      fromOther.push(message);
     }
     else {
-      fromYou[fromYou.length]=message;
+      fromYou.push(message);
     }
   });
 }
