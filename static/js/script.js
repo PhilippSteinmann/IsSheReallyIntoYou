@@ -7,7 +7,7 @@ document.getElementById("start-button").onclick = function() {
 // These are global variables.
 
 // Before the user chooses a friend, this contains 50 most recent threads
-var all_threads; 
+var all_threads;
 
 // Of type Thread, defined by FB at https://developers.facebook.com/docs/graph-api/reference/v2.2/thread
 var thread;
@@ -26,6 +26,9 @@ var messages = [];
 // We save the timer so that we can cancel it when the computation is finished.
 var loading_messages_timer;
 var loading_messages = ["Crunching Numbers...", "Contacting Friends...", "Reading Diaries...", "Analyzing Facial Expressions..."];
+
+
+
 
 var MAX_MESSAGES_TO_LOAD = 400;
 
@@ -62,7 +65,7 @@ function displayFriends(response) {
 
     // all_threads = the 50 most recent chat threads
     all_threads = response.data;
-    
+
     // for each, add to the friend list
     all_threads.forEach(function(thread, thread_index) {
         // only if it's a one-on-one conversation
@@ -136,6 +139,7 @@ function listenForClicks() {
 
             // We only get 25 messages per thread. We need to load more.
             loadAllMessages(thread_index);
+            analyzeMessages
         }
     }
 }
@@ -212,7 +216,21 @@ function displayLoadedMessages() {
 function handleError(error) {
     alert("ERROR: " + error.message);
 }
+function analyzeMessages(){
+    var num_from_other=fromOther();
 
+    return num_from_other;
+}
+
+function fromOther(){
+  var n=0;
+  messages.forEach(function(message){
+    if (message.from.name==friend_name){
+      n=n+1;
+    }
+  });
+  return n;
+}
 // http://stackoverflow.com/a/4033310/805556
 function getURL(url)
 {
