@@ -21,6 +21,8 @@ var friend_name = "";
 
 // Array of objects. Important properties: `created_time`, `from`, `message`
 var messages = [];
+var fromOther=[];
+var fromYou=[];
 
 // The messages used to entertain the user while we fetch messages & compute stuff.
 // We save the timer so that we can cancel it when the computation is finished.
@@ -217,19 +219,23 @@ function handleError(error) {
     alert("ERROR: " + error.message);
 }
 function analyzeMessages(){
-    var num_from_other=fromOther();
+    splitOther();
 
-    return num_from_other;
+    //var num_from_other=fromOther();
+
+    return fromOther.length.toString()+" ";
 }
 
-function fromOther(){
-  var n=0;
+function splitOther(){
+  //var n=0;
   messages.forEach(function(message){
     if (message.from.name==friend_name){
-      n=n+1;
+      fromOther[fromOther.length]=message;
+    }
+    else {
+      fromYou[fromYou.length]=message;
     }
   });
-  return n;
 }
 // http://stackoverflow.com/a/4033310/805556
 function getURL(url)
