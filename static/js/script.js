@@ -362,12 +362,14 @@ function getNumberOfWords(messageArray) {
 // Take the results, get ready to display them
 function processResults(messageRatioRating, messageDelayRating, messageContentRating) {
     var averageRating = (messageRatioRating, messageDelayRating, messageContentRating) / 3;
+    console.log(averageRating);
 
     // The timeout that switches the humurous loading messages
     clearTimeout(loading_messages_timer);
 
     // Convert 1-5 rating to a message for the user
     var verdict = getVerdict(averageRating);
+    console.log(verdict);
 
     // Clear out previous HTML
     clearContent();
@@ -384,10 +386,12 @@ function clearContent() {
 
 // Map rating (1-5) to message for the user
 function getVerdict(rating) {
+    // Let's give hope to our users and use ceil() instead of floor()
+    var rating = Math.ceil(rating);
     var verdicts = [
         "We're not entirely sure that " + friend_first_name + " is aware of your existence.",
         "Sorry, " + user_data.friend_name + ", things don't look so good. Hey, we'll buy you a beer.",
-        "We're not entirely sure...you and " + user_data.friend_name + " are a little close to be friends and a little distant to be into each other. Take care.",
+        "We're not entirely sure...you and " + friend_first_name + " are a little close to be friends and a little distant to be into each other. Take care.",
         "Things are looking good, " + user_data.friend_name + ". Go for it.",
         "You and " + friend_first_name + " are a match made in heaven!"];
     return verdicts[rating + 1];
