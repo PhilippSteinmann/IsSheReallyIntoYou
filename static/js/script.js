@@ -227,7 +227,7 @@ function analyzeMessages() {
 
     var messageRatioRating = analyzeMessageRatio();
     var messageLengthRating = analyzeMessageLength();
-    var messageContentRating = 2;//analyzeMessageContent();
+    var messageContentRating = analyzeMessageContent();
     //var messageTimesRating = analyzeMessageTimes();
 
     processResults(messageRatioRating, messageLengthRating, messageContentRating);
@@ -321,20 +321,20 @@ function analyzeMessageContent() {
     var emoticon_count = 0;
     messagesFromOther.forEach(function(message) {
         total_word_count++;
-        //if ('message' in message){
-        // Count striking words
-        strikingWords.forEach(function(strikingWord) {
-            var striking_word_index = message.message.indexOf(strikingWord);
-            while (striking_word_index != -1) {
-                striking_word_count++;
-                striking_word_index = message.message.indexOf(strikingWord, striking_word_index);
-            }
-        } );
+        if ("message" in message) {
+            strikingWords.forEach(function(strikingWord) {
+                var striking_word_index = message.message.indexOf(strikingWord);
+                while (striking_word_index != -1) {
+                    striking_word_count++;
+                    striking_word_index = message.message.indexOf(strikingWord, striking_word_index);
+                }
+            } );
 
-        var emoticon_match = emoticonsRegex.exec(message.message);
-        while (emoticon_match != null) {
-            emoticon_count++;
-            emoticon_match = emoticonsRegex.exec(message.message);
+            var emoticon_match = emoticonsRegex.exec(message.message);
+            while (emoticon_match != null) {
+                emoticon_count++;
+                emoticon_match = emoticonsRegex.exec(message.message);
+            }
         }
         // Reset the regex
         emoticonsRegex.lastIndex = 0;//}
@@ -380,8 +380,6 @@ function processResults(messageRatioRating, messageLengthRating, messageContentR
 
     // Convert 1-5 rating to a message for the user
     var verdict = getVerdict(averageRating);
-    console.log(verdict);
-
     // Clear out previous HTML
     clearContent();
     displayResults(verdict);
