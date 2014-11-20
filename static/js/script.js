@@ -226,11 +226,11 @@ function analyzeMessages() {
     splitMessagesBySender();
 
     var messageRatioRating = analyzeMessageRatio();
-    var messageDelayRating = analyzeMessageDelays();
-    var messageContentRating = analyzeMessageContent();
+    var messageLengthRating = analyzeMessageLength();
+    var messageContentRating = 2;//analyzeMessageContent();
     //var messageTimesRating = analyzeMessageTimes();
 
-    processResults(messageRatioRating, messageDelayRating, messageContentRating);
+    processResults(messageRatioRating, messageLengthRating, messageContentRating);
 }
 
 // Print out time differences between messages
@@ -247,7 +247,7 @@ function debugMessageOrder() {
 // By default the `created_at` field of messages is in a special string format
 // Makes it hard to compare
 function convertDatesToEpoch() {
-    messages = messages.map(function(message) { 
+    messages = messages.map(function(message) {
         message.created_time_epoch = Date.parse(message.created_time);
         return message;
     } );
@@ -280,8 +280,18 @@ function analyzeMessageRatio() {
 }
 
 // Called by analyzeMessages(), returns 1-5
-function analyzeMessageDelays() {
-    return 2;
+function analyzeMessageLength() {
+    var n=getNumberOfWords(messagesFromOther)/messagesFromOther.length;
+    if (n <=5){
+      return 1;
+    }
+    if (n<=7){
+      return 2;}
+    if (n<=10){
+      return 3;}
+    if (n<=15){
+      return 4;}
+    return 5;
 }
 
 // Called by analyzeMessages(), returns 1-5
@@ -311,6 +321,7 @@ function analyzeMessageContent() {
     var emoticon_count = 0;
     messagesFromOther.forEach(function(message) {
         total_word_count++;
+        //if ('message' in message){
         // Count striking words
         strikingWords.forEach(function(strikingWord) {
             var striking_word_index = message.message.indexOf(strikingWord);
@@ -319,16 +330,16 @@ function analyzeMessageContent() {
                 striking_word_index = message.message.indexOf(strikingWord, striking_word_index);
             }
         } );
-        
+
         var emoticon_match = emoticonsRegex.exec(message.message);
         while (emoticon_match != null) {
             emoticon_count++;
             emoticon_match = emoticonsRegex.exec(message.message);
         }
         // Reset the regex
-        emoticonsRegex.lastIndex = 0;
+        emoticonsRegex.lastIndex = 0;//}
     } );
-    
+
     var important_word_count = emoticon_count + 5 * striking_word_count;
     var percentage = 100 % important_word_count / total_word_count;
     var highest_threshold = 10;
@@ -360,8 +371,8 @@ function getNumberOfWords(messageArray) {
 }
 
 // Take the results, get ready to display them
-function processResults(messageRatioRating, messageDelayRating, messageContentRating) {
-    var averageRating = (messageRatioRating, messageDelayRating, messageContentRating) / 3;
+function processResults(messageRatioRating, messageLengthRating, messageContentRating) {
+    var averageRating = (messageRatioRating, messageLengthRating, messageContentRating) / 3;
     console.log(averageRating);
 
     // The timeout that switches the humurous loading messages
