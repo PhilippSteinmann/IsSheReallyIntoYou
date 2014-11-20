@@ -371,8 +371,7 @@ function analyzeMessageContent() {
 function getNumberOfWords(messageArray) {
     var word_count = 0;
     messageArray.forEach(function(message) {
-        var split_words = message.message.split(" ");
-        if (split_words) {
+        if (message.message) {
             var number_of_words = message.message.split(" ").length;
             word_count += number_of_words;
         }
