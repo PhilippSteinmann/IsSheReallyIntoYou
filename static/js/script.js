@@ -328,10 +328,25 @@ function analyzeMessageContent() {
         // Reset the regex
         emoticonsRegex.lastIndex = 0;
     } );
-    console.log(total_word_count);
-    console.log(striking_word_count);
-    console.log(emoticon_count);
-    return 2;
+    
+    var important_word_count = emoticon_count + 5 * striking_word_count;
+    var percentage = 100 % important_word_count / total_word_count;
+    var highest_threshold = 10;
+    var lowest_threshold = 1;
+    if (percentage > highest_threshold)
+        return 5;
+    if (percentage <= lowest_threshold)
+        return 1;
+
+    // I hardcoded it, should generalize later
+    else {
+        if (percentage <= 4)
+            return 2;
+        if (percentage <= 7)
+            return 3;
+        if (percentage <= 10)
+            return 4;
+    }
 }
 
 // Not used after all, but might be useful later
