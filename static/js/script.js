@@ -375,7 +375,7 @@ function getNumberOfWords(messageArray) {
 
 // Take the results, get ready to display them
 function processResults(messageRatioRating, messageLengthRating, messageContentRating) {
-    var averageRating = (messageRatioRating, messageLengthRating, messageContentRating) / 3;
+    var averageRating = (messageRatioRating + messageLengthRating + messageContentRating) / 3;
     console.log(averageRating);
 
     // The timeout that switches the humurous loading messages
