@@ -97,6 +97,11 @@ h2 {
     color: rgb(51, 51, 51);
 }
 
+.verdictImage {
+    display: block;
+    margin: 0 auto;
+}
+
 /*
  * LOADING SPINNER
  * http://tobiasahlin.com/spinkit/
