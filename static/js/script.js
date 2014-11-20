@@ -419,9 +419,14 @@ function displayResults(verdict) {
     var contentElement = document.getElementById("changing-content");
     var verdictElement = document.createElement("h2");
     var verdictTextElement = document.createTextNode(verdict);
+    
+    var friend_image_element = document.createElement("img");
+    friend_image_element.src = "https://graph.facebook.com/" + messagesFromOther[0].from.id + "/picture?height=200&height=200";
+    friend_image_element.className = "verdictImage";
 
     verdictElement.appendChild(verdictTextElement);
     contentElement.appendChild(verdictElement);
+    contentElement.appendChild(friend_image_element);
 }
 
 // http://stackoverflow.com/a/4033310/805556
