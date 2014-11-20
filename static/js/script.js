@@ -412,7 +412,7 @@ function getVerdict(rating) {
         "We're not entirely sure...you and " + friend_first_name + " are a little close to be friends and a little distant to be into each other. Take care.",
         "Things are looking good, " + user_data.first_name + ". Go for it.",
         "You and " + friend_first_name + " are a match made in heaven!"];
-    return verdicts[rating + 1];
+    return verdicts[rating - 1];
 }
 
 function displayResults(verdict) {
