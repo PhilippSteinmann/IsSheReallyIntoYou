@@ -417,10 +417,14 @@ function getVerdict(rating) {
 
 function displayResults(verdict) {
     var contentElement = document.getElementById("changing-content");
+    contentElement.className = "verdict-container"
     var verdictElement = document.createElement("h2");
     verdictElement.className = "verdict"
     var verdictTextElement = document.createTextNode(verdict);
         
+    var image_container = document.createElement("div");
+    image_container.className = "verdict-image-container";
+    
     var your_image_element = document.createElement("img");
     your_image_element.src = "https://graph.facebook.com/" + messagesFromYou[0].from.id + "/picture?height=200&height=200";
     your_image_element.className = "verdictImage";
@@ -431,8 +435,10 @@ function displayResults(verdict) {
 
     verdictElement.appendChild(verdictTextElement);
     contentElement.appendChild(verdictElement);
-    contentElement.appendChild(your_image_element);
-    contentElement.appendChild(friend_image_element);
+    
+    image_container.appendChild(your_image_element);
+    image_container.appendChild(friend_image_element);
+    contentElement.appendChild(image_container)
 }
 
 // http://stackoverflow.com/a/4033310/805556
