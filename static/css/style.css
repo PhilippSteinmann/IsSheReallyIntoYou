@@ -57,7 +57,7 @@ body {
     clear: both;
 }
 
-#friendList .instructions {
+h2 {
     font-weight: bold;
     color: #CC6600;
     font-size: 36px;
