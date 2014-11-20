@@ -5,7 +5,6 @@ document.getElementById("start-button").onclick = function() {
 }
 
 // These are global variables.
-
 // Before the user chooses a friend, this contains 50 most recent threads
 var all_threads;
 
@@ -72,7 +71,7 @@ function displayFriends(response) {
     all_threads.forEach(function(thread, thread_index) {
         // only if it's a one-on-one conversation
         if (thread.to.data.length == 2)
-            addToFriendsList(thread_index);
+        addToFriendsList(thread_index);
     } );
 
     // Set click listeners on the list
@@ -141,7 +140,7 @@ function listenForClicks() {
 
             // We only get 25 messages per thread. We need to load more.
             loadAllMessages(thread_index);
-            analyzeMessages
+            analyzeMessages();
         }
     }
 }
@@ -152,15 +151,15 @@ function showLoadingScreen() {
 
     // From http://tobiasahlin.com/spinkit/
     var loadingScreenHTML = "\
-<p id='loading' data-message-index='0'>Crunching Numbers...</p>\
-<div class='spinner'>\
-      <div class='rect1'></div>\
-      <div class='rect2'></div>\
-      <div class='rect3'></div>\
-      <div class='rect4'></div>\
-      <div class='rect5'></div>\
-    </div>\
-</div>";
+                             <p id='loading' data-message-index='0'>Crunching Numbers...</p>\
+                             <div class='spinner'>\
+                             <div class='rect1'></div>\
+                             <div class='rect2'></div>\
+                             <div class='rect3'></div>\
+                             <div class='rect4'></div>\
+                             <div class='rect5'></div>\
+                             </div>\
+                             </div>";
     document.getElementById("loading-screen").innerHTML = loadingScreenHTML;
     loading_messages_timer = window.setInterval(changeLoadingMessage, 2400);
 }
@@ -218,30 +217,56 @@ function displayLoadedMessages() {
 function handleError(error) {
     alert("ERROR: " + error.message);
 }
-function analyzeMessages(){
-    splitOther();
+
+function analyzeMessages() {
+    //convertDatesToEpoch();
+    sortMessagesByDate();
+    splitMessagesBySender();
     var fromOtherIndex=indexOther();
     var fromTimeBetIndex=timeBetIndex();
 }
 
 function timeBetIndex(){
-  
+
 }
 
-function splitOther(){
-  messages.forEach(function(message){
-    if (message.from.name==friend_name){
-      fromOther.push(message);
+// Print out time differences between messages
+// Most are positive, but some are negative!
+function debugMessageOrder() {
+    timeDifferences = [];
+    for (var i = 0; i < messages.length - 1; i++) {
+        timeDifferences.push(Date.parse(messages[i + 1].created_time) - Date.parse(messages[i].created_time));
     }
-    else {
-      fromYou.push(message);
-    }
-  });
+    console.log(timeDifferences);
+}
+
+// By default the `created_at` field of messages is in a special string format
+// Makes it hard to compare
+function convertDatesToEpoch() {
+    messages = messages.map(function(message) { 
+        message.created_time = Date.parse(message.created_time);
+        return message;
+    } );
+}
+
+function sortMessagesByDate() {
+    messages.sort(function(a, b) { return a - b });
+}
+
+function splitMessagesBySender(){
+    messages.forEach(function(message) {
+        if (message.from.name == friend_name){
+            fromOther.push(message);
+        }
+        else {
+            fromYou.push(message);
+        }
+    } );
 }
 
 function indexOther(){
-  var n=(fromOther.length*100)/messages.length;
-  return Math.floor(n/20)+1
+    var n=(fromOther.length*100)/messages.length;
+    return Math.floor(n/20)+1
 
 }
 // http://stackoverflow.com/a/4033310/805556
