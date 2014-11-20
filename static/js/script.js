@@ -418,7 +418,12 @@ function getVerdict(rating) {
 function displayResults(verdict) {
     var contentElement = document.getElementById("changing-content");
     var verdictElement = document.createElement("h2");
+    verdictElement.className = "verdict"
     var verdictTextElement = document.createTextNode(verdict);
+        
+    var your_image_element = document.createElement("img");
+    your_image_element.src = "https://graph.facebook.com/" + messagesFromYou[0].from.id + "/picture?height=200&height=200";
+    your_image_element.className = "verdictImage";
     
     var friend_image_element = document.createElement("img");
     friend_image_element.src = "https://graph.facebook.com/" + messagesFromOther[0].from.id + "/picture?height=200&height=200";
@@ -426,6 +431,7 @@ function displayResults(verdict) {
 
     verdictElement.appendChild(verdictTextElement);
     contentElement.appendChild(verdictElement);
+    contentElement.appendChild(your_image_element);
     contentElement.appendChild(friend_image_element);
 }
 
