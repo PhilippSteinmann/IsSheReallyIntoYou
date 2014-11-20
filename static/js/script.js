@@ -144,7 +144,7 @@ function listenForClicks() {
 }
 
 function getFriendFirstName() {
-    friend_first_name = friend_name.split(" ")[0];
+    return friend_name.split(" ")[0];
 }
 
 function showLoadingScreen() {
@@ -399,9 +399,9 @@ function getVerdict(rating) {
     var rating = Math.ceil(rating);
     var verdicts = [
         "We're not entirely sure that " + friend_first_name + " is aware of your existence.",
-        "Sorry, " + user_data.friend_name + ", things don't look so good. Hey, we'll buy you a beer.",
+        "Sorry, " + user_data.first_name + ", things don't look so good. Hey, we'll buy you a beer.",
         "We're not entirely sure...you and " + friend_first_name + " are a little close to be friends and a little distant to be into each other. Take care.",
-        "Things are looking good, " + user_data.friend_name + ". Go for it.",
+        "Things are looking good, " + user_data.first_name + ". Go for it.",
         "You and " + friend_first_name + " are a match made in heaven!"];
     return verdicts[rating + 1];
 }
