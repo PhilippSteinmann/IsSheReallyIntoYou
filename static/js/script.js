@@ -228,6 +228,9 @@ function analyzeMessages() {
     var messageRatioRating = analyzeMessageRatio();
     var messageLengthRating = analyzeMessageLength();
     var messageContentRating = analyzeMessageContent();
+    console.log(messageRatioRating);
+    console.log(messageLengthRating);
+    console.log(messageContentRating);
     //var messageTimesRating = analyzeMessageTimes();
 
     processResults(messageRatioRating, messageLengthRating, messageContentRating);
