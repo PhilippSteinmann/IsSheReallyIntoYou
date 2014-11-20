@@ -220,14 +220,15 @@ function handleError(error) {
 }
 function analyzeMessages(){
     splitOther();
+    var fromOtherIndex=indexOther();
+    var fromTimeBetIndex=timeBetIndex();
+}
 
-    //var num_from_other=fromOther();
-
-    return fromOther.length.toString()+" ";
+function timeBetIndex(){
+  
 }
 
 function splitOther(){
-  //var n=0;
   messages.forEach(function(message){
     if (message.from.name==friend_name){
       fromOther.push(message);
@@ -236,6 +237,12 @@ function splitOther(){
       fromYou.push(message);
     }
   });
+}
+
+function indexOther(){
+  var n=(fromOther.length*100)/messages.length;
+  return Math.floor(n/20)+1
+
 }
 // http://stackoverflow.com/a/4033310/805556
 function getURL(url)
