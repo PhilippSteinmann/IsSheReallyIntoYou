@@ -256,6 +256,7 @@ function convertDatesToEpoch() {
     } );
 }
 
+// Sorts in place
 function sortMessagesByDate() {
     messages.sort(function(a, b) { return a - b });
 }
@@ -325,6 +326,7 @@ function analyzeMessageContent() {
     messagesFromOther.forEach(function(message) {
         total_word_count++;
         if ("message" in message) {
+            // Check for strikings words
             strikingWords.forEach(function(strikingWord) {
                 var striking_word_index = message.message.indexOf(strikingWord);
                 while (striking_word_index != -1) {
@@ -333,6 +335,7 @@ function analyzeMessageContent() {
                 }
             } );
 
+            // Check for emoticons
             var emoticon_match = emoticonsRegex.exec(message.message);
             while (emoticon_match != null) {
                 emoticon_count++;
@@ -343,8 +346,9 @@ function analyzeMessageContent() {
         emoticonsRegex.lastIndex = 0;//}
     } );
 
+    // Important words = emoticons + 5 * striking words
     var important_word_count = emoticon_count + 5 * striking_word_count;
-    var percentage = 100 % important_word_count / total_word_count;
+    var percentage = 100 * important_word_count / total_word_count;
     var highest_threshold = 10;
     var lowest_threshold = 1;
     if (percentage > highest_threshold)
@@ -371,7 +375,7 @@ function getNumberOfWords(messageArray) {
         if (split_words) {
             var number_of_words = message.message.split(" ").length;
             word_count += number_of_words;
-        {
+        }
     } );
     return word_count;
 }
